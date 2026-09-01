@@ -1,0 +1,8 @@
+sounddevice
+numpy
+setuptools<81
+webrtcvad
+faster-whisper
+rapidfuzz
+PySide6
+requests
