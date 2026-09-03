@@ -1,8 +1,4 @@
 """Orchestrates capture -> VAD -> STT -> match -> callback.
-
-Deliberately has zero knowledge of Qt or threading, so it can be run and
-tested from a plain script (see scripts/test_lookup_cli.py-style checks)
-before being wrapped for the GUI in ui/worker.py.
 """
 
 from collections.abc import Callable
@@ -13,7 +9,7 @@ from matching.spell_matcher import SpellMatcher
 from stt.transcriber import Transcriber
 
 class SpellListener:
-    def __init__(self, on_spell_detected: Callable[[dict], None], silence_chunks_to_end_utterance: int = 15):
+    def __init__(self, on_spell_detected: Callable[[dict], None], silence_chunks_to_end_utterance: int = 3):
         """on_spell_detected is called with a spell dict each time one is matched."""
         self.silence_chunks_to_end_utterance = silence_chunks_to_end_utterance
         self.on_spell_detected = on_spell_detected
@@ -24,6 +20,12 @@ class SpellListener:
         self.matcher = SpellMatcher(spell_names=spell_names)
         self._running = False
 
+    def _transcribe_and_match(self, buffer: list) -> None:
+        transcript = self.transcriber.transcribe_chunk(buffer)
+        print(f"heard: {transcript!r}")
+        for name in self.matcher.find_matches(transcript):
+            spell = self.spells[name.lower()]
+            self.on_spell_detected(spell)
 
     def start(self) -> None:
         """Begin the capture -> VAD -> STT -> match loop. Blocking."""
@@ -40,11 +42,7 @@ class SpellListener:
             elif buffer:
                 silence_count += 1
                 if silence_count > self.silence_chunks_to_end_utterance:
-                    transcript = self.transcriber.transcribe_chunk(buffer)
-                    print(f"heard: {transcript!r}")
-                    for name in self.matcher.find_matches(transcript):
-                        spell = self.spells[name.lower()]
-                        self.on_spell_detected(spell)
+                    self._transcribe_and_match(buffer)
                     buffer = []
                     silence_count = 0
 

@@ -1,9 +1,4 @@
-"""Loads the cached SRD spell dataset into memory for fast lookup.
-
-Data source: data/srd_spells.json, populated by scripts/fetch_srd_data.py.
-Kept in memory as a dict keyed by lowercase spell name — no DB round trip
-at lookup time.
-"""
+"""Loads data/srd_spells.json into memory, keyed by lowercase spell name."""
 
 from pathlib import Path
 import json

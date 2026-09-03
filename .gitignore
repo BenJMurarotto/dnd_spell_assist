@@ -5,3 +5,9 @@ venv/
 .env
 *.egg-info/
 .vscode/
+
+# PyInstaller build output and the pre-downloaded model it bundles —
+# regenerate with scripts/download_model.py + packaging/dnd_spell_assist.spec
+build/
+dist/
+models/

@@ -1,9 +1,4 @@
-"""One-off script: pull the SRD spell dataset and write it to data/srd_spells.json.
-
-Run this once at dev time (not part of the running app) so the app never
-makes a network call at runtime. Source: 5e-bits/5e-SRD-API data dump or
-its hosted API (SRD content only — OGL/ORC licensed, not full book text).
-"""
+"""One-off: fetches SRD spell data (OGL/ORC-licensed, not full book text) to data/srd_spells.json so the app never hits the network at runtime."""
 import json
 from pathlib import Path
 

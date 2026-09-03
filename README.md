@@ -1,37 +1,52 @@
 # D&D Spell Assist
 
-Listens via microphone during a D&D session; when a spell name is spoken,
-looks it up from a locally cached SRD dataset and displays its details
-(description, level, casting time, etc.) for the DM.
+A listening companion for your D&D table. Say a spell name out loud during
+a session, and its full rules text — level, school, casting time, range,
+duration, description — pops up in the app!
 
-## Data
+## Using it
 
-Spell data comes from the D&D 5e SRD (System Reference Document), which is
-open content under OGL 1.0a / ORC — not the full copyrighted rulebooks.
-Run `scripts/fetch_srd_data.py` once to populate `data/srd_spells.json`;
-the app reads that local file at runtime, no network calls during use.
+1. Download the app from the [Releases](../../releases) page and unzip it.
+2. Double-click **D&D Spell Assist.app** to launch it. (First launch only:
+   macOS will warn it's from an unidentified developer — right-click the
+   app and choose **Open** instead of double-clicking to get past that.)
+3. Grant microphone access when prompted.
+4. Play as normal. Whenever anyone says a spell name, its details appear
+   in the window.
 
-## Pipeline
+No Python, no installation, no internet connection required — everything
+runs locally on your machine.
+
+Spell data is from the D&D 5e SRD (System Reference Document), the subset
+of D&D rules released as open content under OGL 1.0a / ORC — not the full
+copyrighted rulebooks.
+
+## Building it yourself
+
+If you'd rather run it from source or build your own copy:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python scripts/fetch_srd_data.py   # populate data/srd_spells.json
+python main.py
+```
+
+### Pipeline
 
 ```
 mic -> VAD (skip silence) -> STT (rolling buffer) -> fuzzy match against
 spell names -> lookup in local dict -> display in GUI
 ```
 
-## Build order
-
-1. `scripts/fetch_srd_data.py` + `data/loader.py` — validate the data cache
-   via `scripts/test_lookup_cli.py` before any audio code exists.
-2. `stt/transcriber.py` against a pre-recorded `.wav` — no mic yet.
-3. `matching/spell_matcher.py` against that transcript.
-4. `audio/capture.py` + `audio/vad.py` — swap in live mic, still
-   console-only via `pipeline/listener.py`.
-5. `ui/` — PySide6 window wired up last.
-
-## Setup
+### Packaging a standalone build
 
 ```
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-build.txt
+python scripts/download_model.py            # bundle the STT model offline
+pyinstaller packaging/dnd_spell_assist.spec --noconfirm
 ```
+
+Output: `dist/D&D Spell Assist.app`, fully self-contained (no Python or
+internet needed to run it).

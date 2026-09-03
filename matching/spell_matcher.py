@@ -1,9 +1,4 @@
-"""Fuzzy-matches transcribed text against known spell names via rapidfuzz.
-
-Exact substring matching is too noisy — several spell names (Light, Aid,
-Guidance) are common English words. Tune the similarity threshold to
-balance false positives against missed detections.
-"""
+"""Fuzzy-matches transcript text against spell names — exact matching is too noisy since names like Light/Aid/Guidance are common words."""
 
 from rapidfuzz import fuzz, process
 

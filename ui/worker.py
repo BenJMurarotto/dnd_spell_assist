@@ -1,9 +1,4 @@
-"""QThread wrapper around pipeline.listener.SpellListener.
-
-The only place in the app that touches both the pipeline and Qt. Turns
-the pipeline's plain callback into a Qt signal so the GUI thread never
-blocks on audio capture or STT inference.
-"""
+"""QThread wrapper turning SpellListener's callback into a Qt signal so the GUI thread never blocks on audio/STT."""
 
 from PySide6.QtCore import QThread, Signal
 from pipeline.listener import SpellListener

@@ -1,8 +1,4 @@
-"""Voice activity detection — filters out silence before it reaches STT.
-
-Wraps webrtcvad (or swap in silero-vad later). Only speech-containing
-chunks should be passed on to the transcriber.
-"""
+"""Voice activity detection — filters out silence before it reaches STT."""
 
 import numpy as np
 import webrtcvad

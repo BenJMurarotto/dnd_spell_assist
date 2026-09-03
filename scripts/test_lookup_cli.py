@@ -1,8 +1,4 @@
-"""Stage-1 sanity check: type a spell name, print its cached data.
-
-Validates data/srd_spells.json and data/loader.py before any audio/STT
-code exists.
-"""
+"""Sanity check: type a spell name, print its cached data."""
 from data.loader import get_spell, load_spells
 
 
